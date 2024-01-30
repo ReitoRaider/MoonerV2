@@ -1,4 +1,5 @@
-# ⚠ BETA RELEASED FOR PUBLIC TESTING (i need to recode this shit)
+# ⚠ BETA RELEASED FOR PUBLIC TESTING 
+# (i need to recode this shit)
 <p align="center">
   <img src="https://i.imgur.com/hnZ9vgk.png" width="250" height="250">
 </p>
