@@ -239,7 +239,9 @@ if get.update():
                     return None, None
 
             @staticmethod
-            def update(local: float, github: float, changelog):
+            def update(local, github, changelog):
+                local = float(local)
+                github = float(github)
                 if local == github:
                     pass
                 else:
