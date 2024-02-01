@@ -1,4 +1,4 @@
-version = "2.1"
+version = "2.2"
 print("Importing modules")
 from src import *
 from src.modules import *
@@ -120,43 +120,15 @@ if get.update():
 
 class run:
     def joiner():
-        #if log.askyn("DISCORD ANTI RAID BYPASS") == "y": 
-        #    discord_bypass = True
-        #else:
-        #    discord_bypass = False
+        if log.askyn("DISCORD ANTI RAID BYPASS") == "y": 
+            discord_bypass = True
+        else:
+            discord_bypass = False
         invite = log.ask("INVITE")
         guild_info = fetch_guild(invite)
         succes, cap, ratelimit, r_time, fail = 0, 0, 0, 0, 0
-        #if discord_bypass:
-        #    for token in get.tokens():
-        #        try:
-        #            status = run.bypass_join(token, invite)
-        #            r_time = "0s"
-        #        except:
-        #            status, r_time = run.bypass_join(token, invite)
-
-        #        if status == "succes": succes += 1
-        #        elif status == "captcha": cap += 1
-        #        elif status == "failed": fail += 1
-        #        elif status == "ratelimit": 
-        #            ratelimit += 1
-        #            time.sleep(float(r_time))
-        #            run.bypass_join(token, invite)
-        #            
-        #        util.clear()
-        #        banner = f"""{c.r}
-        #        {"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗ ╦  ╦╔══╗".center(size)}
-        #        {"║║║║ ║║ ║║║║║╣ ╠╦╝ ╚╗╔╝╔══╝".center(size)}
-        #        {"╩ ╩╚═╝╚═╝╝╚╝╚═╝╩╚═  ╚╝ ╚═══".center(size)}
-        #        """
-        #        print(banner)
-        #        print(f"{c.r}Discord bypass is enabled joining will take ~ {get.token_amt() / 2}m")
-        #        input("")
-        #        print(f"{c.r}Joined - {succes} Capched - {cap} Ratelimits - {ratelimit} ({r_time}s) Failed - {fail}")
-        #        print(f"{c.r}\n{guild_info}")
-        #else:
-        for token in get.tokens():
-            def do(succes, cap, ratelimit, r_time, fail):
+        if discord_bypass:
+            def do(token, invite, succes, cap, ratelimit, r_time, fail):
                 try:
                     status = join(token, invite)
                     r_time = "0s"
@@ -170,18 +142,54 @@ class run:
                     ratelimit += 1
                     time.sleep(float(r_time))
                     do(succes, cap, ratelimit, r_time, fail)
-                    
-            do(succes, cap, ratelimit, r_time, fail)
+                time.sleep(30)
 
-            util.clear()
-            banner = f"""{c.r}
-            {"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗ ╦  ╦╔══╗".center(size)}
-            {"║║║║ ║║ ║║║║║╣ ╠╦╝ ╚╗╔╝╔══╝".center(size)}
-            {"╩ ╩╚═╝╚═╝╝╚╝╚═╝╩╚═  ╚╝ ╚═══".center(size)}
-            """
-            print(banner)
-            print(f"{c.r}Joined - {succes} Capched - {cap} Ratelimits - {ratelimit} ({r_time}s) Failed - {fail}")
-            print(f"{c.r}\n{guild_info}")
+                return succes, cap, ratelimit, r_time, fail
+            
+            input(f"{c.r}Not sure if this even works if it works tell me")
+            for token in get.tokens():                             
+                succes, cap, ratelimit, r_time, fail = do(token, invite, succes, cap, ratelimit, r_time, fail)
+                    
+                util.clear()
+                banner = f"""{c.r}
+                {"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗ ╦  ╦╔══╗".center(size)}
+                {"║║║║ ║║ ║║║║║╣ ╠╦╝ ╚╗╔╝╔══╝".center(size)}
+                {"╩ ╩╚═╝╚═╝╝╚╝╚═╝╩╚═  ╚╝ ╚═══".center(size)}
+                """
+                print(banner)
+                print(f"{c.r}Discord bypass is enabled joining will take ~ {get.token_amt() / 2}m")
+                print(f"{c.r}Joined - {succes} Capched - {cap} Ratelimits - {ratelimit} ({r_time}s) Failed - {fail}")
+                print(f"{c.r}\n{guild_info}")
+        else:
+            def do(token, invite, succes, cap, ratelimit, r_time, fail):
+                try:
+                    status = join(token, invite)
+                    r_time = "0"
+                except:
+                    status, r_time = join(token, invite)
+
+                if status == "succes": succes += 1
+                elif status == "captcha": cap += 1
+                elif status == "failed": fail += 1
+                elif status == "ratelimit": 
+                    ratelimit += 1
+                    time.sleep(float(r_time))
+                    do(token, invite, succes, cap, ratelimit, r_time, fail)
+
+                return succes, cap, ratelimit, r_time, fail
+            
+            for token in get.tokens():
+                succes, cap, ratelimit, r_time, fail = do(token, invite, succes, cap, ratelimit, r_time, fail)
+
+                util.clear()
+                banner = f"""{c.r}
+                {"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗ ╦  ╦╔══╗".center(size)}
+                {"║║║║ ║║ ║║║║║╣ ╠╦╝ ╚╗╔╝╔══╝".center(size)}
+                {"╩ ╩╚═╝╚═╝╝╚╝╚═╝╩╚═  ╚╝ ╚═══".center(size)}
+                """
+                print(banner)
+                print(f"{c.r}Joined - {succes} Capched - {cap} Ratelimits - {ratelimit} ({r_time}s) Failed - {fail}")
+                print(f"{c.r}\n{guild_info}")
 
     def leaver():
         guildid = log.ask("GUILD ID")
@@ -205,24 +213,27 @@ class run:
         i = 0
         tkn_amt = get.token_amt()
         succes, lock, ratelimit, r_time, fail, invalid = 0, 0, 0, 0, 0, 0
-        for token in get.tokens():
-            def do(i, succes, lock, ratelimit, r_time, fail, invalid):
-                i += 1
-                try:
-                    status, r_time = check(token)
-                except ValueError:
-                    status = check(token)
-                    r_time = "0s"
-                if status == "succes": succes += 1; valid.append(token)
-                elif status == "locked": lock += 1
-                elif status == "failed": fail += 1
-                elif status == "invalid": invalid += 1
-                elif status == "ratelimit": 
-                    ratelimit += 1
-                    time.sleep(float(r_time))
-                    do(i, succes, lock, ratelimit, r_time, fail, invalid)
-            do(i, succes, lock, ratelimit, r_time, fail, invalid)
+        def do(token, succes, lock, ratelimit, r_time, fail, invalid):
+            try:
+                status, r_time = check(token)
+            except ValueError:
+                status = check(token)
+                r_time = "0"
+            if status == "succes": succes += 1; valid.append(token)
+            elif status == "locked": lock += 1
+            elif status == "failed": fail += 1
+            elif status == "invalid": invalid += 1
+            elif status == "ratelimit": 
+                ratelimit += 1
+                time.sleep(float(r_time))
+                do(token, succes, lock, ratelimit, r_time, fail, invalid)
             
+            return succes, lock, ratelimit, r_time, fail, invalid
+        
+        for token in get.tokens():
+            i += 1
+            succes, lock, ratelimit, r_time, fail, invalid = do(token, succes, lock, ratelimit, r_time, fail, invalid)
+    
             util.clear()
             banner = f"""{c.r}
             {"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗ ╦  ╦╔══╗".center(size)}
@@ -239,25 +250,37 @@ class run:
     def spammer():
         message = log.ask("MESSSAGE")
         channelid = log.ask("CHANNEL ID")
-        #leave_on_fail = log.askyn("LEAVE ON FAIL")
+        if log.askyn("LEAVE ON FAIL (ANTI TOKEN BAN)") == "y": 
+            leave_on_fail = True
+            guild_id = log.ask("GUILD ID")
+        else:
+            leave_on_fail = False
+            guild_id = "69420"
         succes, ratelimit, r_time, fail = 0, 0, 0, 0
+        def do(token ,succes, ratelimit, r_time, fail):
+            try:
+                status, r_time = send_message(token, message, channelid)
+            except ValueError:
+                status = send_message(token, message, channelid)
+                r_time = "0"
+            if status == "succes": succes += 1
+            elif status == "failed": 
+                fail += 1
+                if leave_on_fail:
+                    for token in get.tokens():
+                        leave(token, guild_id)
+            elif status == "ratelimit": 
+                ratelimit += 1
+                time.sleep(float(r_time))
+                do(token, succes, ratelimit, r_time, fail)
+
+            return succes, ratelimit, r_time, fail
+        
         try:
             print(f"{c.r}Controll + C to stop")
             while True:
                 for token in get.tokens():
-                    def do(succes, ratelimit, r_time, fail):
-                        try:
-                            status, r_time = send_message(token, message, channelid)
-                        except ValueError:
-                            status = send_message(token, message, channelid)
-                            r_time = "0s"
-                        if status == "succes": succes += 1
-                        elif status == "failed": fail += 1
-                        elif status == "ratelimit": 
-                            ratelimit += 1
-                            time.sleep(float(r_time))
-                            do(succes, ratelimit, r_time, fail)
-                    do()
+                    succes, ratelimit, r_time, fail = do(token, succes, ratelimit, r_time, fail)
                         
                 util.clear()
                 banner = f"""{c.r}
@@ -268,15 +291,32 @@ class run:
                 print(f"{c.r}Controll + C to stop")
                 print(banner)
                 print(f"{c.r}Sent - {succes} Ratelimits - {ratelimit} ({r_time}s) Failed - {fail}")
+
         except KeyboardInterrupt:
             pass
 
     def reactor():
+        # big big big mess but idc
         channelid = log.ask("CHANNEL ID")
         messageid = log.ask("MESSAGE ID")
         emojis = get_reactions(channelid)
         i = 0
         succes, ratelimit, r_time, fail = 0, 0, 0, 0, 0
+        def do(token, selected_emoji, channelid, messageid, succes, ratelimit, r_time, fail):
+            try:
+                status, r_time = react(token, channelid, messageid, selected_emoji)
+            except ValueError:
+                status = react(token, channelid, messageid, selected_emoji)
+                r_time = "0"
+            if status == "succes": succes += 1
+            elif status == "failed": fail += 1
+            elif status == "ratelimit": 
+                ratelimit += 1
+                time.sleep(float(r_time))
+                do(token, selected_emoji, channelid, messageid, succes, ratelimit, r_time, fail)
+
+            return succes, ratelimit, r_time, fail
+
         from src.modules.reactor import found_emojis
         if found_emojis:
             for emoji in emojis:
@@ -288,21 +328,7 @@ class run:
                 if 0 <= selected_index < len(emojis):
                     selected_emoji = emojis[selected_index].split(":")[0]
                     for token in get.tokens():
-                        def do(succes, ratelimit, r_time, fail):
-                            try:
-                                status, r_time = react(token, channelid, messageid, selected_emoji)
-                            except ValueError:
-                                status = react(token, channelid, messageid, selected_emoji)
-                                r_time = "0s"
-                            if status == "succes": succes += 1
-                            elif status == "failed": fail += 1
-                            elif status == "ratelimit": 
-                                ratelimit += 1
-                                time.sleep(float(r_time))
-                                do(succes, ratelimit, r_time, fail)
-
-
-                        do(succes, ratelimit, r_time, fail)
+                        succes, ratelimit, r_time, fail = do(token, selected_emoji, channelid, messageid, succes, ratelimit, r_time, fail)
                         util.clear()
                         banner = f"""{c.r}
                         {"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗".center(size)}
@@ -321,21 +347,23 @@ class run:
         guildid = log.ask("GUILD ID")
         rules = get_rules(guildid)
         succes, ratelimit, r_time, fail = 0, 0, 0, 0, 0
-        for token in get.tokens():
-            def do(succes, ratelimit, r_time, fail):
-                try:
-                    status, r_time = bypass_rules(token, guildid)
-                except ValueError:
-                    status = bypass_rules(token, guildid)
-                    r_time = "0s"
-                if status == "succes": succes += 1
-                elif status == "failed": fail += 1
-                elif status == "ratelimit": 
-                    ratelimit += 1
-                    time.sleep(float(r_time))
-                    do(succes, ratelimit, r_time, fail)
+        def do(token, guildid, succes, ratelimit, r_time, fail):
+            try:
+                status, r_time = bypass_rules(token, guildid)
+            except ValueError:
+                status = bypass_rules(token, guildid)
+                r_time = "0"
+            if status == "succes": succes += 1
+            elif status == "failed": fail += 1
+            elif status == "ratelimit": 
+                ratelimit += 1
+                time.sleep(float(r_time))
+                do(token, guildid, succes, ratelimit, r_time, fail)
             
-            do(succes, ratelimit, r_time, fail)
+            return succes, ratelimit, r_time, fail
+            
+        for token in get.tokens():
+            succes, ratelimit, r_time, fail = do(token, guildid, succes, ratelimit, r_time, fail)
 
             util.clear()
             banner = f"""{c.r}
@@ -402,7 +430,7 @@ while __name__ == "__main__":
 {f"[Stars] {stars} [Stars] ------- [Tokens] {get.token_amt()} [Tokens] ------- [Debug] {get.debug()} [Debug]".center(size)}
 
 {"║!║ - Manage tokens       ║$║ - Edit config       ║#║ - Change debug state".center(size)}
-{"! Most features are still in development".center(size)}       
+{"! Most features are still in development | Counters are off im aware of that it will be fixed in the next update".center(size)}       
 {"╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗".center(size)}
 {"║                                                                                                                                     ║".center(size)}
 {"║  ║01║ - Joiner                ║07║ - Rule bypass           ║13║ - VC rapper         ║19║ - ???                  ║25║ - ???          ║".center(size)}
