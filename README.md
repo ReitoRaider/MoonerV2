@@ -11,19 +11,22 @@
 </p>
 
 <p align="center">
-  <img alt="Github top language" src="https://img.shields.io/github/languages/top/R3CI/MoonerV2?style=flat&color=red">
+  <img src="https://img.shields.io/github/languages/top/R3CI/MoonerV2?style=flat&color=darkred">
 
-  <img alt="Github language count" src="https://img.shields.io/github/languages/count/R3CI/MoonerV2?style=flat&color=red">
+  <img src="https://img.shields.io/github/languages/count/R3CI/MoonerV2?style=flat&color=darkred">
 
-  <img alt="Repository size" src="https://img.shields.io/github/repo-size/R3CI/MoonerV2?style=flat&color=red">
+  <img src="https://img.shields.io/github/repo-size/R3CI/MoonerV2?style=flat&color=darkred">
 
-  <img alt="License" src="https://img.shields.io/github/license/R3CI/MoonerV2?style=flat&color=orange">
+  <img src="https://img.shields.io/github/license/R3CI/MoonerV2?style=flat&color=darkred">
 
-  <img alt="Github issues" src="https://img.shields.io/github/issues/R3CI/MoonerV2?style=flat&color=red">
+  <img src="https://img.shields.io/github/issues/R3CI/MoonerV2?style=flat&color=darkred">
 
-  <img alt="Github forks" src="https://img.shields.io/github/forks/R3CI/MoonerV2?style=flat&color=red">
+  <img src="https://img.shields.io/github/forks/R3CI/MoonerV2?style=flat&color=darkred">
 
-  <img alt="Github stars" src="https://img.shields.io/github/stars/R3CI/MoonerV2?style=flat&color=red">
+  <img src="https://img.shields.io/github/stars/R3CI/MoonerV2?style=flat&color=darkred">
+
+  <img src="https://img.shields.io/github/last-commit/r3ci/MoonerV2?style=flat&color=darkred">
+
 </p>
 
 ## 🖥 Preview
