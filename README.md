@@ -35,13 +35,15 @@
 </p>
 
 ## ✍️ Usage
-1. `Download python 3.11.7`
+1. `Use brain`
+ 
+2. `Download python 3.11.7`
 
-2. `Run main.py`
+3. `Run main.py`
 
-3. `Wait until it finishes downlading required libs`
+4. `Wait until it finishes downlading required libs`
 
-4. `Chose an option`
+5. `Chose an option`
 
 
 ## ⚠️ DISCLAIMER
