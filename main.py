@@ -1,9 +1,7 @@
-version = "2.2"
-print("Importing modules")
-from src import *
-from src.modules import *
+version = "2.3"
+print("Importing libs")
 try:
-    import os, sys, time, json, uuid, requests, base64, tls_client, random, platform, websocket, webbrowser, threading
+    import os, sys, time, json, uuid, requests, base64, tls_client, random, platform, websocket, webbrowser, threading, datetime
     from colorama import init, Fore; init()
 except ModuleNotFoundError:
     libs = [
@@ -13,13 +11,19 @@ except ModuleNotFoundError:
         "websocket-client",
         "uuid",
         "base64",
-        "tls_client"
+        "tls_client",
+        "datetime"
     ]
+    print("Installing libs please wait")
     for lib in libs:
-        print("Installing libs please wait")
         os.system(f"pip install -q {lib}")
-        import os, sys, time, json, uuid, requests, base64, tls_client, random, platform, websocket, webbrowser, threading
+        import os, sys, time, json, uuid, requests, base64, tls_client, random, platform, websocket, webbrowser, threading, datetime
         from colorama import init, Fore; init()
+
+print("Importing modules")
+from src import *
+from src.modules import *
+
 
 if platform.system() == 'Windows':
     os.system(f"mode con: cols=170 lines=35")
@@ -126,199 +130,154 @@ class run:
             discord_bypass = False
         invite = log.ask("INVITE")
         guild_info = fetch_guild(invite)
-        succes, cap, ratelimit, r_time, fail = 0, 0, 0, 0, 0
+
         if discord_bypass:
-            def do(token, invite, succes, cap, ratelimit, r_time, fail):
-                try:
-                    status = join(token, invite)
-                    r_time = "0s"
-                except:
-                    status, r_time = join(token, invite)
-
-                if status == "succes": succes += 1
-                elif status == "captcha": cap += 1
-                elif status == "failed": fail += 1
-                elif status == "ratelimit": 
-                    ratelimit += 1
-                    time.sleep(float(r_time))
-                    do(succes, cap, ratelimit, r_time, fail)
-                time.sleep(30)
-
-                return succes, cap, ratelimit, r_time, fail
-            
             input(f"{c.r}Not sure if this even works if it works tell me")
-            for token in get.tokens():                             
-                succes, cap, ratelimit, r_time, fail = do(token, invite, succes, cap, ratelimit, r_time, fail)
-                    
-                util.clear()
-                banner = f"""{c.r}
-                {"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗ ╦  ╦╔══╗".center(size)}
-                {"║║║║ ║║ ║║║║║╣ ╠╦╝ ╚╗╔╝╔══╝".center(size)}
-                {"╩ ╩╚═╝╚═╝╝╚╝╚═╝╩╚═  ╚╝ ╚═══".center(size)}
-                """
-                print(banner)
-                print(f"{c.r}Discord bypass is enabled joining will take ~ {get.token_amt() / 2}m")
-                print(f"{c.r}Joined - {succes} Capched - {cap} Ratelimits - {ratelimit} ({r_time}s) Failed - {fail}")
-                print(f"{c.r}\n{guild_info}")
-        else:
-            def do(token, invite, succes, cap, ratelimit, r_time, fail):
-                try:
-                    status = join(token, invite)
-                    r_time = "0"
-                except:
-                    status, r_time = join(token, invite)
-
-                if status == "succes": succes += 1
-                elif status == "captcha": cap += 1
-                elif status == "failed": fail += 1
-                elif status == "ratelimit": 
-                    ratelimit += 1
-                    time.sleep(float(r_time))
-                    do(token, invite, succes, cap, ratelimit, r_time, fail)
-
-                return succes, cap, ratelimit, r_time, fail
-            
+            util.clear()
+            banner = f"""{c.r}
+            {"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗ ╦  ╦╔══╗"}
+            {"║║║║ ║║ ║║║║║╣ ╠╦╝ ╚╗╔╝╔══╝"}
+            {"╩ ╩╚═╝╚═╝╝╚╝╚═╝╩╚═  ╚╝ ╚═══"}
+            """
+            bprint(banner)
+            print(f"{c.r}Discord bypass is enabled joining will take ~ {get.token_amt() / 2}m")
+            print(f"{c.r}\nGuild info:\n{guild_info}")
             for token in get.tokens():
-                succes, cap, ratelimit, r_time, fail = do(token, invite, succes, cap, ratelimit, r_time, fail)
+                status, text = join(token, invite, True)
+                if status == 200:
+                    log.g(status, text, token)
+                elif status == 400:
+                    log.c(status, text, token)
+                elif status == 429:
+                    log.r(status, text, token)
+                    slip = float(text.get('retry_after'))
+                    time.sleep(slip)
+                else:   
+                    log.un(status, text, token)
 
-                util.clear()
-                banner = f"""{c.r}
-                {"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗ ╦  ╦╔══╗".center(size)}
-                {"║║║║ ║║ ║║║║║╣ ╠╦╝ ╚╗╔╝╔══╝".center(size)}
-                {"╩ ╩╚═╝╚═╝╝╚╝╚═╝╩╚═  ╚╝ ╚═══".center(size)}
-                """
-                print(banner)
-                print(f"{c.r}Joined - {succes} Capched - {cap} Ratelimits - {ratelimit} ({r_time}s) Failed - {fail}")
-                print(f"{c.r}\n{guild_info}")
+        else:
+            util.clear()
+            banner = f"""{c.r}
+            {"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗ ╦  ╦╔══╗"}
+            {"║║║║ ║║ ║║║║║╣ ╠╦╝ ╚╗╔╝╔══╝"}
+            {"╩ ╩╚═╝╚═╝╝╚╝╚═╝╩╚═  ╚╝ ╚═══"}
+            """
+            bprint(banner)
+            print(f"{c.r}\nGuild info:\n{guild_info}")
+            for token in get.tokens():
+                status, text = join(token, invite, True)
+                if status == 200:
+                    log.g(status, text, token)
+                elif status == 400:
+                    log.c(status, text, token)
+                elif status == 429:
+                    log.r(status, text, token)
+                    slip = float(text.get('retry_after'))
+                    time.sleep(slip)
+                else:   
+                    log.un(status, text, token)
 
     def leaver():
         guildid = log.ask("GUILD ID")
-        succes, fail = 0, 0
+        util.clear()
+        banner = f"""{c.r}
+        {"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗ ╦  ╦╔══╗"}
+        {"║║║║ ║║ ║║║║║╣ ╠╦╝ ╚╗╔╝╔══╝"}
+        {"╩ ╩╚═╝╚═╝╝╚╝╚═╝╩╚═  ╚╝ ╚═══"}
+        """
+        bprint(banner)
         for token in get.tokens():
-            status = leave(token, guildid)
-            if status == "succes": succes += 1
-            elif status == "failed": fail += 1
-            util.clear()
-            banner = f"""{c.r}
-            {"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗ ╦  ╦╔══╗".center(size)}
-            {"║║║║ ║║ ║║║║║╣ ╠╦╝ ╚╗╔╝╔══╝".center(size)}
-            {"╩ ╩╚═╝╚═╝╝╚╝╚═╝╩╚═  ╚╝ ╚═══".center(size)}
-            """
-            print(banner)
-            print(f"{c.r}Left - {succes} Failed - {fail}")
+            status, text = leave(token, guildid)
+            if status == 204:
+                log.g(status, text, token)
+            else:
+                log.un(status, text, token)
 
     def checker():
-        if log.askyn("KEEP VALID ONLY") == "y": onlyvalid = True
-        valid = []
-        i = 0
-        tkn_amt = get.token_amt()
-        succes, lock, ratelimit, r_time, fail, invalid = 0, 0, 0, 0, 0, 0
-        def do(token, succes, lock, ratelimit, r_time, fail, invalid):
-            try:
-                status, r_time = check(token)
-            except ValueError:
-                status = check(token)
-                r_time = "0"
-            if status == "succes": succes += 1; valid.append(token)
-            elif status == "locked": lock += 1
-            elif status == "failed": fail += 1
-            elif status == "invalid": invalid += 1
-            elif status == "ratelimit": 
-                ratelimit += 1
-                time.sleep(float(r_time))
-                do(token, succes, lock, ratelimit, r_time, fail, invalid)
-            
-            return succes, lock, ratelimit, r_time, fail, invalid
-        
+        if log.askyn("KEEP VALID ONLY") == "y": onlyvalid = True   
+        util.clear()
+        banner = f"""{c.r}
+        {"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗ ╦  ╦╔══╗"}
+        {"║║║║ ║║ ║║║║║╣ ╠╦╝ ╚╗╔╝╔══╝"}
+        {"╩ ╩╚═╝╚═╝╝╚╝╚═╝╩╚═  ╚╝ ╚═══"}
+        """
+        bprint(banner)
         for token in get.tokens():
-            i += 1
-            succes, lock, ratelimit, r_time, fail, invalid = do(token, succes, lock, ratelimit, r_time, fail, invalid)
-    
-            util.clear()
-            banner = f"""{c.r}
-            {"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗ ╦  ╦╔══╗".center(size)}
-            {"║║║║ ║║ ║║║║║╣ ╠╦╝ ╚╗╔╝╔══╝".center(size)}
-            {"╩ ╩╚═╝╚═╝╝╚╝╚═╝╩╚═  ╚╝ ╚═══".center(size)}
-            """
-            print(banner)
-            print(f"{c.r}Valid - {succes} Locked - {lock} Invalid - {invalid} Ratelimits - {ratelimit} ({r_time}s) Failed - {fail} {i}/{tkn_amt}")
-            if onlyvalid:
-                with open(f"{files.main}/tokens.txt", "w") as f:
-                    for token in valid:
+            r = check(token)
+            if r:
+                if onlyvalid:
+                    open(f"{files.main}/tokens.txt", "w")
+                    with open(f"{files.main}/tokens.txt", "a") as f:
                         f.write(token + "\n")
+
 
     def spammer():
         message = log.ask("MESSSAGE")
         channelid = log.ask("CHANNEL ID")
-        if log.askyn("LEAVE ON FAIL (ANTI TOKEN BAN)") == "y": 
-            leave_on_fail = True
+        if log.askyn("LEAVE ON UNKNOWN CHANNEL (ANTI TOKEN BAN)") == "y": 
+            leave_on_unknown = True
             guild_id = log.ask("GUILD ID")
         else:
-            leave_on_fail = False
+            leave_on_unknown = False
             guild_id = "69420"
-        succes, ratelimit, r_time, fail = 0, 0, 0, 0
-        def do(token ,succes, ratelimit, r_time, fail):
-            try:
-                status, r_time = send_message(token, message, channelid)
-            except ValueError:
-                status = send_message(token, message, channelid)
-                r_time = "0"
-            if status == "succes": succes += 1
-            elif status == "failed": 
-                fail += 1
-                if leave_on_fail:
-                    for token in get.tokens():
-                        leave(token, guild_id)
-            elif status == "ratelimit": 
-                ratelimit += 1
-                time.sleep(float(r_time))
-                do(token, succes, ratelimit, r_time, fail)
 
-            return succes, ratelimit, r_time, fail
-        
-        try:
-            print(f"{c.r}Controll + C to stop")
-            while True:
+        def leave_on_unknown_func(guildid):
+            if leave_on_unknown:
                 for token in get.tokens():
-                    succes, ratelimit, r_time, fail = do(token, succes, ratelimit, r_time, fail)
-                        
-                util.clear()
-                banner = f"""{c.r}
-                {"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗ ╦  ╦╔══╗".center(size)}
-                {"║║║║ ║║ ║║║║║╣ ╠╦╝ ╚╗╔╝╔══╝".center(size)}
-                {"╩ ╩╚═╝╚═╝╝╚╝╚═╝╩╚═  ╚╝ ╚═══".center(size)}
-                """
-                print(f"{c.r}Controll + C to stop")
-                print(banner)
-                print(f"{c.r}Sent - {succes} Ratelimits - {ratelimit} ({r_time}s) Failed - {fail}")
+                    status, text = leave(token, guildid)
+                    if status == 204:
+                        log.g(status, text, token)
+                    else:
+                        log.un(status, text, token)
 
-        except KeyboardInterrupt:
-            pass
+        util.clear()
+        banner = f"""{c.r}
+        {"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗ ╦  ╦╔══╗"}
+        {"║║║║ ║║ ║║║║║╣ ╠╦╝ ╚╗╔╝╔══╝"}
+        {"╩ ╩╚═╝╚═╝╝╚╝╚═╝╩╚═  ╚╝ ╚═══"}
+        """
+        bprint(banner)
+        print(f"{c.r}Controll + C to stop")
+        for token in get.tokens():
+            try:
+                while True:
+                    status, text = send_message(token, message, channelid, True)
+                    if status == 200:
+                        log.g(status, text, token)
+                    elif status == 400:
+                        log.c(status, text, token)
+                    elif status == 429:
+                        log.r(status, text, token)
+                        slip = float(text.get('retry_after'))
+                        time.sleep(slip)
+                    elif status == 404:
+                        print(f"{c.r}BAN DETECTED LEAVING")
+                        leave_on_unknown_func(guild_id)
+                        print(f"{c.r}Left")
+                        break
+                    else:   
+                        log.un(status, text, token)
+
+            except KeyboardInterrupt:
+                pass
 
     def reactor():
-        # big big big mess but idc
         channelid = log.ask("CHANNEL ID")
         messageid = log.ask("MESSAGE ID")
-        emojis = get_reactions(channelid)
+        emojis, state, found_msg = get_reactions(channelid, messageid)
         i = 0
-        succes, ratelimit, r_time, fail = 0, 0, 0, 0, 0
-        def do(token, selected_emoji, channelid, messageid, succes, ratelimit, r_time, fail):
-            try:
-                status, r_time = react(token, channelid, messageid, selected_emoji)
-            except ValueError:
-                status = react(token, channelid, messageid, selected_emoji)
-                r_time = "0"
-            if status == "succes": succes += 1
-            elif status == "failed": fail += 1
-            elif status == "ratelimit": 
-                ratelimit += 1
-                time.sleep(float(r_time))
-                do(token, selected_emoji, channelid, messageid, succes, ratelimit, r_time, fail)
+        util.clear()
+        banner = f"""{c.r}
+        {"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗ ╦  ╦╔══╗"}
+        {"║║║║ ║║ ║║║║║╣ ╠╦╝ ╚╗╔╝╔══╝"}
+        {"╩ ╩╚═╝╚═╝╝╚╝╚═╝╩╚═  ╚╝ ╚═══"}
+        """
+        bprint(banner)
 
-            return succes, ratelimit, r_time, fail
-
-        from src.modules.reactor import found_emojis
-        if found_emojis:
+        if state:
+            if not found_msg:
+                input(f"{c.r}Message not found")
+                pass
             for emoji in emojis:
                 i += 1
                 print(f"{c.r}{i} - {emoji.split(':')[0]}")
@@ -328,52 +287,47 @@ class run:
                 if 0 <= selected_index < len(emojis):
                     selected_emoji = emojis[selected_index].split(":")[0]
                     for token in get.tokens():
-                        succes, ratelimit, r_time, fail = do(token, selected_emoji, channelid, messageid, succes, ratelimit, r_time, fail)
-                        util.clear()
-                        banner = f"""{c.r}
-                        {"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗".center(size)}
-                        {"║║║║ ║║ ║║║║║╣ ╠╦╝".center(size)}
-                        {"╩ ╩╚═╝╚═╝╝╚╝╚═╝╩╚═".center(size)}
-                        """
-                        print(banner)
-                        print(f"{c.r}Reacted - {succes} Ratelimits - {ratelimit} ({r_time}s) Failed - {fail}")
+                        status, text = react(token, channelid, messageid, selected_emoji)
+                        if status == 204:
+                            log.g(status, text, token)
+                        elif status == 400:
+                            log.c(status, text, token)
+                        elif status == 429:
+                            log.r(status, text, token)
+                            slip = float(text.get('retry_after'))
+                            time.sleep(slip)
+                        else:   
+                           log.un(status, text, token)
                 else:
                     print(f"{c.r}Invalid emoji index")
             except ValueError:
                 print(f"{c.r}Not a valid number")
-        print(f"{c.r}No emojis ware found")
+        else:
+            print(f"{c.r}No emojis ware found")
 
     def rule_bypasser():
         guildid = log.ask("GUILD ID")
         rules = get_rules(guildid)
-        succes, ratelimit, r_time, fail = 0, 0, 0, 0, 0
-        def do(token, guildid, succes, ratelimit, r_time, fail):
-            try:
-                status, r_time = bypass_rules(token, guildid)
-            except ValueError:
-                status = bypass_rules(token, guildid)
-                r_time = "0"
-            if status == "succes": succes += 1
-            elif status == "failed": fail += 1
-            elif status == "ratelimit": 
-                ratelimit += 1
-                time.sleep(float(r_time))
-                do(token, guildid, succes, ratelimit, r_time, fail)
-            
-            return succes, ratelimit, r_time, fail
-            
+        util.clear()
+        banner = f"""{c.r}
+        {"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗ ╦  ╦╔══╗"}
+        {"║║║║ ║║ ║║║║║╣ ╠╦╝ ╚╗╔╝╔══╝"}
+        {"╩ ╩╚═╝╚═╝╝╚╝╚═╝╩╚═  ╚╝ ╚═══"}
+        """
+        bprint(banner)
+        print(f"{c.r}\nRules:\n{rules}")
         for token in get.tokens():
-            succes, ratelimit, r_time, fail = do(token, guildid, succes, ratelimit, r_time, fail)
-
-            util.clear()
-            banner = f"""{c.r}
-            {"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗ ╦  ╦╔══╗".center(size)}
-            {"║║║║ ║║ ║║║║║╣ ╠╦╝ ╚╗╔╝╔══╝".center(size)}
-            {"╩ ╩╚═╝╚═╝╝╚╝╚═╝╩╚═  ╚╝ ╚═══".center(size)}
-            """
-            print(banner)
-            print(f"{c.r}Bypassed - {succes} Ratelimits - {ratelimit} ({r_time}s) Failed - {fail}")
-            print(f"{c.r}\n{rules}")
+            status, text = bypass_rules(token, guildid, True)
+            if status == 201:
+                log.g(status, text, token)
+            elif status == 400:
+                log.c(status, text, token)
+            elif status == 429:
+                log.r(status, text, token)
+                slip = float(text.get('retry_after'))
+                time.sleep(slip)
+            else:   
+                log.un(status, text, token)
 
     # in work
     def button_clicker():
@@ -413,6 +367,13 @@ class run:
     def in_work():
         print(f"{c.r}This feature is still in work ")
 
+    def no_token_check():
+        if get.token_amt() == 0:
+            print(f"{c.r}No tokens found please input your tokens in the opened file")
+            os.startfile(f"{files.main}/tokens.txt")
+            input(f"{c.res}~> Enter to continue")
+            run.no_token_check()
+
 def TEST():
     pass
 
@@ -430,7 +391,7 @@ while __name__ == "__main__":
 {f"[Stars] {stars} [Stars] ------- [Tokens] {get.token_amt()} [Tokens] ------- [Debug] {get.debug()} [Debug]".center(size)}
 
 {"║!║ - Manage tokens       ║$║ - Edit config       ║#║ - Change debug state".center(size)}
-{"! Most features are still in development | Counters are off im aware of that it will be fixed in the next update".center(size)}       
+{"! Most features are still in development".center(size)}       
 {"╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗".center(size)}
 {"║                                                                                                                                     ║".center(size)}
 {"║  ║01║ - Joiner                ║07║ - Rule bypass           ║13║ - VC rapper         ║19║ - ???                  ║25║ - ???          ║".center(size)}
@@ -444,9 +405,11 @@ while __name__ == "__main__":
 """
     for x in ["═","╚","╔","╝","╗","-"]:
         menu = menu.replace(x, f"{c.lr}{x}{c.r}")
-    print(menu)
+    bprint(menu)
 
-    choice = input(f"""
+    run.no_token_check()
+
+    choice = input(f"""{c.r}
 ╔══MoonerV2@{os.getlogin()}
 ╚══════{c.res}> """)
     options = {
@@ -473,15 +436,15 @@ while __name__ == "__main__":
     if choice in options:
         util.clear()
         banner = f"""{c.r}
-{"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗ ╦  ╦╔══╗".center(size)}
-{"║║║║ ║║ ║║║║║╣ ╠╦╝ ╚╗╔╝╔══╝".center(size)}
-{"╩ ╩╚═╝╚═╝╝╚╝╚═╝╩╚═  ╚╝ ╚═══".center(size)}
+{"╔╦╗╔═╗╔═╗╔╗╔╔═╗╦═╗ ╦  ╦╔══╗"}
+{"║║║║ ║║ ║║║║║╣ ╠╦╝ ╚╗╔╝╔══╝"}
+{"╩ ╩╚═╝╚═╝╝╚╝╚═╝╩╚═  ╚╝ ╚═══"}
 """
 
-        print(banner)
+        bprint(banner)
         options[choice]()
         if choice not in ["#", "$", "!"]:
-            input(f"{c.g}\nFinished, waiting")
+            input(f"\n{c.res}~> Enter to continue")
         util.clear()
     else:
         print(f"{c.r}[Invalid option]")
