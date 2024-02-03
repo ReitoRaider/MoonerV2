@@ -24,7 +24,7 @@ def fetch_guild(invite):
     
         return '\n'.join(info)
     except Exception as e:
-        if get.debug:
+        if get.debug():
             input(f"GUILD INFO FETCHER: {e}")
         else:
             return "Unknown"

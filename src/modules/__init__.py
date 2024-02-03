@@ -1,5 +1,4 @@
 from .joiner import join
-from .bypassed_joiner import bypass_join
 from .guild_fetcher import fetch_guild
 from .leaver import leave
 from .checker import check

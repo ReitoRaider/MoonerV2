@@ -1,7 +1,7 @@
 from src import *
 
 def get_reactions(channel_id, message_id):
-    global found_emojis
+    found_message = False
     found_emojis = False
     session = get.ss()
     tokens = get.tokens()
@@ -21,25 +21,23 @@ def get_reactions(channel_id, message_id):
                     found == True
                     for entry in r.json():
                         if entry["id"] == message_id and entry["channel_id"] == channel_id:
-                            found_emojis = True
-                            break
+                            found_message = True
                         for message in r.json():
                             for reaction in message.get("reactions", []):
                                 emoji_name = reaction["emoji"]["name"]
                                 count = reaction["count"]
                                 emojis.append(f"{emoji_name}:{count}")
-                            return emojis
+                            return emojis, True, found_message
                     else:
-                        return "No emojis found"
+                        return [], False, False
                 else:
-                    pass
+                    return [], False, False
             except Exception as e:
                 if get.debug():
                     input(f"RACTION FETCHER: {e}") 
 
-def react(token, channel_id, message_id, emoji):
+def react(token, channel_id, message_id, emoji, jonson=False):
     session = get.ss()
-    encoded_emoji = ''.join(['%' + format(char, '02X') for char in emoji.encode('utf-8')])
     try:
         r = session.put(
             f"https://discord.com/api/v9/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/%40me?location=Message&type=0",
@@ -48,16 +46,11 @@ def react(token, channel_id, message_id, emoji):
         if get.debug():
             input(f"REACTONER: {r.status_code}")
             input(f"REACTONER: {r.text}")
-        if r.status_code == 200:
-            return "succes" 
-        elif r.status_code == 403:
-            return "locked"
-        elif r.status_code == 429:                          
-            return "ratelimit", r.json().get('retry_after')
-        elif r.status_code == 401:
-            return "invalid"  
-        else:
-            return "failed"
+
+        if jonson: return r.status_code, r.json()
+        else: return r.status_code, r.text
+    
     except Exception as e:
         if get.debug():
             input(f"REACTON ERROR {e}")
+        return 69, "failed lol imagine"

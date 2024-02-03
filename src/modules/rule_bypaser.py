@@ -26,7 +26,7 @@ def get_rules(guildid):
                     input(f"RULE FETCHER: {e}") 
 
 
-def bypass_rules(token, guildid):
+def bypass_rules(token, guildid, jonson=False):
     session = get.ss()
     try:
         r = session.put(
@@ -36,16 +36,11 @@ def bypass_rules(token, guildid):
         if get.debug():
             input(f"RULE BYPASS: {r.status_code}")
             input(f"RULE BYPASS: {r.text}")
-        if r.status_code == 201:
-            return "succes" 
-        elif r.status_code == 403:
-            return "locked"
-        elif r.status_code == 429:                          
-            return "ratelimit", r.json().get('retry_after')
-        elif r.status_code == 401:
-            return "invalid"  
-        else:
-            return "failed"
+
+        if jonson: return r.status_code, r.json()
+        else: return r.status_code, r.text
+        
     except Exception as e:
         if get.debug():
             input(f"RULE BYPASS: {e}")
+        return 69, "failed lol imagine"

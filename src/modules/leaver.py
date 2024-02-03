@@ -1,6 +1,6 @@
 from src import *
 
-def leave(token, guildid):
+def leave(token, guildid, jonson=False):
     session = get.ss()
     try:
         payload = {
@@ -17,12 +17,11 @@ def leave(token, guildid):
             input(f"LEAVER: {r.status_code}") 
             input(f"LEAVER: {r.text}") 
 
-        if r.status_code == 204:
-            return "succes"
-        else:
-            return "failed"
+        if jonson: return r.status_code, r.json()
+        else: return r.status_code, r.text
+    
     except Exception as e:
         if get.debug():
             input(f"LEAVER ERROR: {e}")
         else:
-            return "failed"
+            return 69, "failed lol imagine"
