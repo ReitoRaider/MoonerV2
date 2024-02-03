@@ -7,10 +7,22 @@ import tls_client
 
 class get:
     user_agent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9031 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36"
+
+        
+    def folder():
+        if platform.system() == 'Windows':
+            path = os.path.join(os.getenv('APPDATA'))
+            return f"{path}\MoonerV2"
+        elif platform.system() == 'Linux':
+            path = os.path.join(os.path.expanduser('~'), '.local', 'share')
+            return f"{path}\MoonerV2"
+        
+
     def debug():
         with open(f"{get.folder()}/config.json", "r") as f:
             cfg = json.load(f)
-            return cfg["settings"]["debug"]
+            state = cfg["settings"]["debug"]
+            return state
         
     def update():
         with open(f"{get.folder()}/config.json", "r") as f:
@@ -20,14 +32,6 @@ class get:
     def ss():
         session = tls_client.Session(client_identifier="chrome_108",random_tls_extension_order=True)
         return session
-        
-    def folder():
-        if platform.system() == 'Windows':
-            path = os.path.join(os.getenv('APPDATA'))
-            return f"{path}\MoonerV2"
-        elif platform.system() == 'Linux':
-            path = os.path.join(os.path.expanduser('~'), '.local', 'share')
-            return f"{path}\MoonerV2"
 
     def stars():
         r = requests.get(f"https://api.github.com/repos/R3CI/MoonerV2")
